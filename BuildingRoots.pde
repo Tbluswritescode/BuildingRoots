@@ -8,7 +8,7 @@ a number of improvements must be made from this point.  There need to be signifi
 down by an increment of 1 will create a smooth curve.  This will make the swap function work significatnly better to create fewer hard angles and instead
 gently curve the roots as they grow.  Further improvements are as follows:
     Find a way to continue a current path and spawn a second path from this path to branch
-    limit ranges of random path swaps to prevent the zig zag problem.  
+      ####limit ranges of random path swaps to prevent the zig zag problem.  
     Play with the framerate and swap threshholds to find the most root-like appearance.  
     Simplify global variables section and privatize any variables which can be privatized
     find a way to reduce the number of repetitive calls in draw
@@ -37,10 +37,14 @@ int t = vert_mid;
 int v = horiz_mid + int(random(50));
 int w = vert_mid;
 
-int pathA = int(random(12));
-int pathB = int(random(12));
-int pathC = int(random(12));
-int pathD = int(random(12));
+int pathA = int(random(16));
+int prevpathA = pathA;
+int pathB = int(random(16));
+int prevpathB = pathB;
+int pathC = int(random(16));
+int prevpathC = pathC;
+int pathD = int(random(16));
+int prevpathD = pathD;
 
 boolean forward = true;
 boolean down = true;
@@ -62,8 +66,12 @@ enum GP {
   DLL(7),
   DDRR(8),
   DDLL(9),
-  DDDLLL(10),
-  DDDRRR(11);
+  DDL(10),
+  DDR(11),
+  DDDL(12),
+  DDDR (13),
+  DDDLLL(14),
+  DDDRRR(15);
   
   int value;
   static Map map = new HashMap<>();
@@ -107,15 +115,27 @@ void draw() {
     RETURNS:: NONE
   */
   GP xx = GP.valueOf(pathA);
+  GP yy = GP.valueOf(prevpathA);
   GP qq = GP.valueOf(pathB);
+  GP pp = GP.valueOf(prevpathB);
   GP tt = GP.valueOf(pathC);
-  GP vv = GP.valueOf(pathD); 
+  GP ss = GP.valueOf(prevpathC);
+  GP vv = GP.valueOf(pathD);
+  GP ww = GP.valueOf(prevpathD);
   
   int[] xy = drawHelp(x, y, xx);
   int[] qp = drawHelp(q, p, qq);
   int[] st = drawHelp(s, t, tt);
   int[] vw = drawHelp(v, w, vv);
+  //int[] xy = drawHelp(x, y, yy);
+  //int[] qp = drawHelp(q, p, pp);
+  //int[] st = drawHelp(s, t, ss);
+  //int[] vw = drawHelp(v, w, ww);
   
+  update(outOfRange(xy), 0);
+  update(outOfRange(qp), 1);
+  update(outOfRange(st), 2);
+  update(outOfRange(vw), 3);
   update(outOfRange(xy), 0);
   update(outOfRange(qp), 1);
   update(outOfRange(st), 2);
@@ -133,18 +153,19 @@ void draw() {
   }
   count += 1;
   if (count == 20){
+    prevpathA = pathA;
     pathA = swapPath(count, pathA);
   }else if (count == 40){
+    prevpathB = pathB;
     pathB = swapPath(count, pathB);
   }else if (count == 60){
+    prevpathC = pathC;
     pathC = swapPath(count, pathC);
   }else if (count == 80){
+    prevpathD = pathD;
     pathD = swapPath(count, pathA);
   }else if (count > 100){
-    pathA = int(random(12));
-    pathB = int(random(12));
-    pathC = int(random(12));
-    pathD = int(random(12));
+    updateAllPaths();
     count = 0;
   }
   if (framecount < 10){
@@ -185,18 +206,20 @@ int[] drawHelp(int x, int y, GP path){
   }else{img.text("1", x, y);}
   img.endDraw();
   /*this section needs major expansion, the way to improve this project is by adding significantly more combinations of random numbers to work with.*/
-  int randlrg = int(random(10, 15));
-  int randmed = int(random(4, 9));
-  int randsml = int(random(0, 4));
+  int randlrg = int(random(13, 16));
+  int randmed = int(random(7, 10));
+  int randsml = int(random(1, 4));
+  int randhmed = int(random(10, 13));
+  int randlmed = int(random(4, 7));
   
-  x = newCoord(x, path, true, randlrg, randsml, randmed);
-  y = newCoord(y, path, false, randlrg, randsml, randmed);
+  x = newCoord(x, path, true, randlrg, randsml, randmed, randhmed, randlmed);
+  y = newCoord(y, path, false, randlrg, randsml, randmed, randhmed, randlmed);
   return new int[]{x, y};
 }
 
 
 
-int newCoord(int coord, GP x, boolean isX, int lrg, int sml, int med){
+int newCoord(int coord, GP x, boolean isX, int lrg, int sml, int med, int hmed, int lmed){
   /*This function takes many parameters all used to change a set of coordinates to the next point along a given growth path
     
     PARAMETERS :: 
@@ -289,6 +312,30 @@ int newCoord(int coord, GP x, boolean isX, int lrg, int sml, int med){
     }else{
       coord += random(lrg);
     }
+  }else if (x == GP.DDL){
+    if (isX){
+      coord -= random(sml);
+    }else{
+      coord += random(lmed);
+    }
+  }else if (x == GP.DDR){
+    if (isX){
+      coord += random(sml);
+    }else{
+      coord += random(lmed);
+    }
+  }else if (x == GP.DDDL){
+    if (isX){
+      coord -= random(sml);
+    }else{
+      coord += random(hmed);
+    }
+  }else if (x == GP.DDDR){
+    if (isX){
+      coord += random(sml);
+    }else{
+      coord += random(hmed);
+    }
   }
   return int(coord);
 }
@@ -360,4 +407,16 @@ void update(int[] ab, int swap){
             break;
     default: break;
   }
+}
+
+void updateAllPaths(){
+  prevpathA = pathA;
+  pathA = int(random(16));
+  prevpathB = pathB;
+  pathB = int(random(16));
+  prevpathC = pathC;
+  pathC = int(random(16));
+  prevpathD = pathD;
+  pathD = int(random(16));
+
 }
