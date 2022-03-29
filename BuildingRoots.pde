@@ -21,18 +21,21 @@ There are many further improvements to be made which I have not yet taken the ti
 import java.util.*;
 
 //GLOBALS
+int framecount = 1;
+PGraphics img;
+int horiz_size = 1900;
+int vert_size = 1000;
+int horiz_mid = int(.5 * horiz_size);
+int vert_mid = int(.5 * vert_size);
 
-int horiz_size = 1000;
-int vert_size = 800;
-
-int x = 500;
-int y = 400;
-int q = 500;
-int p = 400;
-int s = 500 - int(random(50));
-int t = 400;
-int v = 500 + int(random(50));
-int w = 400;
+int x = horiz_mid;
+int y = vert_mid;
+int q = horiz_mid;
+int p = vert_mid;
+int s = horiz_mid - int(random(50));
+int t = vert_mid;
+int v = horiz_mid + int(random(50));
+int w = vert_mid;
 
 int pathA = int(random(12));
 int pathB = int(random(12));
@@ -87,12 +90,12 @@ void setup() {
     
     RETURNS:: NONE
   */
-  size(1000, 800); 
-  background(0); 
-  frameRate(1);
+  size(1900, 1000); 
+  background(0, 0, 0, 0); 
+  frameRate(120);
   fill(100, 120, 100);
-  
-  rect(467.5, 150, 55, 250, 10, 10, 17, 22);
+  img = createGraphics(horiz_size, vert_size);
+ 
 
 }
 
@@ -144,6 +147,17 @@ void draw() {
     pathD = int(random(12));
     count = 0;
   }
+  if (framecount < 10){
+    img.save("frames/000" + framecount + ".png");
+  }else if (framecount < 100){
+    img.save("frames/00" + framecount + ".png");
+  }else if (framecount < 1000){
+    img.save("frames/0" + framecount + ".png");
+  }else {
+    img.save("frames/" + framecount + ".png");
+  }
+  framecount += 1;
+  image(img, 0, 0);
 }
 
 
@@ -164,9 +178,12 @@ int[] drawHelp(int x, int y, GP path){
         Contains and X and Y values for the next placement
   */
   int is0 = int(random(2));
+  img.beginDraw();
+  img.fill(100, 120, 100);
   if (is0 == 0){
-    text("0", x, y);
-  }else{text("1", x, y);}
+    img.text("0", x, y);
+  }else{img.text("1", x, y);}
+  img.endDraw();
   /*this section needs major expansion, the way to improve this project is by adding significantly more combinations of random numbers to work with.*/
   int randlrg = int(random(10, 15));
   int randmed = int(random(4, 9));
@@ -176,6 +193,7 @@ int[] drawHelp(int x, int y, GP path){
   y = newCoord(y, path, false, randlrg, randsml, randmed);
   return new int[]{x, y};
 }
+
 
 
 int newCoord(int coord, GP x, boolean isX, int lrg, int sml, int med){
@@ -292,8 +310,8 @@ int[] outOfRange(int[] xy){
   if (x > horiz_size || y > vert_size || x < 0 || y < 0){
     //x = int(random(horiz_size));
     //y = int(random(vert_size));
-    x = 500;
-    y = 400;
+    x = horiz_mid;
+    y = vert_mid;
     forward = false;
     down = false;
   }
