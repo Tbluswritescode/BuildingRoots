@@ -19,14 +19,15 @@ There are many further improvements to be made which I have not yet taken the ti
 */
 
 import java.util.*;
+import java.lang.Math;
 
 //GLOBALS
 int framecount = 1;
 PGraphics img;
-int horiz_size = 1900;
-int vert_size = 1000;
+int horiz_size = 2450;
+int vert_size = 2000;
 int horiz_mid = int(.5 * horiz_size);
-int vert_mid = int(.5 * vert_size);
+int vert_mid = 10;
 
 int x = horiz_mid;
 int y = vert_mid;
@@ -36,6 +37,15 @@ int s = horiz_mid - int(random(50));
 int t = vert_mid;
 int v = horiz_mid + int(random(50));
 int w = vert_mid;
+
+int x1 = horiz_mid;
+int y1 = vert_mid;
+int q1 = horiz_mid;
+int p1 = vert_mid;
+int s1 = horiz_mid - int(random(50));
+int t1 = vert_mid;
+int v1 = horiz_mid + int(random(50));
+int w1 = vert_mid;
 
 int pathA = int(random(16));
 int prevpathA = pathA;
@@ -98,11 +108,13 @@ void setup() {
     
     RETURNS:: NONE
   */
-  size(1900, 1000); 
-  background(0, 0, 0, 0); 
-  frameRate(120);
+  textSize(100);
+  size(2450, 2000); 
+  background(255, 255, 255, 0); 
+  frameRate(240);
   fill(100, 120, 100);
   img = createGraphics(horiz_size, vert_size);
+  PFont font = loadFont("AlHor-48.vlw");
  
 
 }
@@ -115,18 +127,22 @@ void draw() {
     RETURNS:: NONE
   */
   GP xx = GP.valueOf(pathA);
-  GP yy = GP.valueOf(prevpathA);
+  //GP yy = GP.valueOf(prevpathA);
   GP qq = GP.valueOf(pathB);
-  GP pp = GP.valueOf(prevpathB);
+  //GP pp = GP.valueOf(prevpathB);
   GP tt = GP.valueOf(pathC);
-  GP ss = GP.valueOf(prevpathC);
+  //GP ss = GP.valueOf(prevpathC);
   GP vv = GP.valueOf(pathD);
-  GP ww = GP.valueOf(prevpathD);
+  //GP ww = GP.valueOf(prevpathD);
   
   int[] xy = drawHelp(x, y, xx);
+  //int[] xxy = drawHelp(x, y, yy);
   int[] qp = drawHelp(q, p, qq);
+  //int[] qqp = drawHelp(q, p, pp);
   int[] st = drawHelp(s, t, tt);
+  //int[] sst = drawHelp(s, t, ss);
   int[] vw = drawHelp(v, w, vv);
+  //int[] vvw = drawHelp(v, w, ww);
   //int[] xy = drawHelp(x, y, yy);
   //int[] qp = drawHelp(q, p, pp);
   //int[] st = drawHelp(s, t, ss);
@@ -136,10 +152,10 @@ void draw() {
   update(outOfRange(qp), 1);
   update(outOfRange(st), 2);
   update(outOfRange(vw), 3);
-  update(outOfRange(xy), 0);
-  update(outOfRange(qp), 1);
-  update(outOfRange(st), 2);
-  update(outOfRange(vw), 3);
+  //update(outOfRange(xxy), 0);
+  //update(outOfRange(qqp), 1);
+  //update(outOfRange(sst), 2);
+  //update(outOfRange(vvw), 3);
   
   float rand = random(4);
   if (rand < 1.5){
@@ -200,17 +216,20 @@ int[] drawHelp(int x, int y, GP path){
   */
   int is0 = int(random(2));
   img.beginDraw();
-  img.fill(100, 120, 100);
+  img.fill(0, 0, 0);
   if (is0 == 0){
     img.text("0", x, y);
   }else{img.text("1", x, y);}
+  
+  double tSize = 28 + (.8 * (count < 60 ? count : 120 - count));
+  img.textSize((float)tSize);
   img.endDraw();
   /*this section needs major expansion, the way to improve this project is by adding significantly more combinations of random numbers to work with.*/
-  int randlrg = int(random(13, 16));
-  int randmed = int(random(7, 10));
-  int randsml = int(random(1, 4));
-  int randhmed = int(random(10, 13));
-  int randlmed = int(random(4, 7));
+  int randlrg = int(random(23, 28));
+  int randmed = int(random(13, 18));
+  int randsml = int(random(3, 8));
+  int randhmed = int(random(18, 23));
+  int randlmed = int(random(8, 13));
   
   x = newCoord(x, path, true, randlrg, randsml, randmed, randhmed, randlmed);
   y = newCoord(y, path, false, randlrg, randsml, randmed, randhmed, randlmed);
