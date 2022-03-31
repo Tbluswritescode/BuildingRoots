@@ -14,6 +14,9 @@ gently curve the roots as they grow.  Further improvements are as follows:
     find a way to reduce the number of repetitive calls in draw
     Improve draw to allow for a variable number of paths rather than a constant 4
     Convert all paths to path objects
+    
+    Consalis Font to replace current font
+    
 There are many further improvements to be made which I have not yet taken the time to assess
 
 */
@@ -24,8 +27,8 @@ import java.lang.Math;
 //GLOBALS
 int framecount = 1;
 PGraphics img;
-int horiz_size = 2450;
-int vert_size = 2000;
+int horiz_size = 1900;
+int vert_size = 1000;
 int horiz_mid = int(.5 * horiz_size);
 int vert_mid = 10;
 
@@ -59,6 +62,7 @@ int prevpathD = pathD;
 boolean forward = true;
 boolean down = true;
 
+float maxFont = 28;
 int count = 0;
 //END GLOBALS
 
@@ -109,9 +113,9 @@ void setup() {
     RETURNS:: NONE
   */
   textSize(100);
-  size(2450, 2000); 
+  size(1900, 1000); 
   background(255, 255, 255, 0); 
-  frameRate(240);
+  frameRate(120);
   fill(100, 120, 100);
   img = createGraphics(horiz_size, vert_size);
   PFont font = loadFont("AlHor-48.vlw");
@@ -222,14 +226,20 @@ int[] drawHelp(int x, int y, GP path){
   }else{img.text("1", x, y);}
   
   double tSize = 28 + (.8 * (count < 60 ? count : 120 - count));
-  img.textSize((float)tSize);
+  maxFont = (float)tSize;
+  img.textSize(maxFont);
   img.endDraw();
+  
+  int split1 = int(.8 * maxFont);
+  int split2 = int(.6 * maxFont);
+  int split3 = int(.4 * maxFont);
+  int split4 = int(.2 * maxFont);
   /*this section needs major expansion, the way to improve this project is by adding significantly more combinations of random numbers to work with.*/
-  int randlrg = int(random(23, 28));
-  int randmed = int(random(13, 18));
-  int randsml = int(random(3, 8));
-  int randhmed = int(random(18, 23));
-  int randlmed = int(random(8, 13));
+  int randlrg = int(random(split1, 28));
+  int randmed = int(random(split3, split2));
+  int randsml = int(random(3, split4));
+  int randhmed = int(random(split2, split1));
+  int randlmed = int(random(split4, split3));
   
   x = newCoord(x, path, true, randlrg, randsml, randmed, randhmed, randlmed);
   y = newCoord(y, path, false, randlrg, randsml, randmed, randhmed, randlmed);
