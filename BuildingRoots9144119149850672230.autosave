@@ -14,9 +14,6 @@ gently curve the roots as they grow.  Further improvements are as follows:
     find a way to reduce the number of repetitive calls in draw
     Improve draw to allow for a variable number of paths rather than a constant 4
     Convert all paths to path objects
-    
-    Consalis Font to replace current font
-    
 There are many further improvements to be made which I have not yet taken the time to assess
 
 */
@@ -27,8 +24,8 @@ import java.lang.Math;
 //GLOBALS
 int framecount = 1;
 PGraphics img;
-int horiz_size = 1900;
-int vert_size = 1000;
+int horiz_size = 2450;
+int vert_size = 2000;
 int horiz_mid = int(.5 * horiz_size);
 int vert_mid = 10;
 
@@ -62,9 +59,9 @@ int prevpathD = pathD;
 boolean forward = true;
 boolean down = true;
 
-float maxFont = 28;
 int count = 0;
 PFont font;
+
 //END GLOBALS
 
 /* Enum represents growth paths, D stands for down, L for left, R for right.  As we get in to letter repeats the only difference with pathing is the degree / speed
@@ -114,14 +111,14 @@ void setup() {
     RETURNS:: NONE
   */
   textSize(100);
-  size(1900, 1000); 
+  size(2450, 2000); 
   background(255, 255, 255, 0); 
-  frameRate(120);
+  frameRate(240);
   fill(100, 120, 100);
   img = createGraphics(horiz_size, vert_size);
   PFont font = loadFont("Consolas-48.vlw");
   setFont(font);
-  
+
  
 
 }
@@ -223,26 +220,20 @@ int[] drawHelp(int x, int y, GP path){
   */
   int is0 = int(random(2));
   img.beginDraw();
-  img.fill(175, 155, 00);
+  img.fill(0, 0, 0);
   if (is0 == 0){
     img.text("0", x, y);
   }else{img.text("1", x, y);}
   
-  double tSize = 28 + (.8 * (count < 60 ? count : 120 - count));
-  maxFont = (float)tSize;
-  img.textFont(font, maxFont);
+  double tSize = 18 + (count < 60 ? count : 120 - count);
+  img.textFont(font, (float)tSize);
   img.endDraw();
-  
-  int split1 = int(.8 * maxFont);
-  int split2 = int(.6 * maxFont);
-  int split3 = int(.4 * maxFont);
-  int split4 = int(.2 * maxFont);
   /*this section needs major expansion, the way to improve this project is by adding significantly more combinations of random numbers to work with.*/
-  int randlrg = int(random(split1, 28));
-  int randmed = int(random(split3, split2));
-  int randsml = int(random(3, split4));
-  int randhmed = int(random(split2, split1));
-  int randlmed = int(random(split4, split3));
+  int randlrg = int(random(23, 28));
+  int randmed = int(random(13, 18));
+  int randsml = int(random(3, 8));
+  int randhmed = int(random(18, 23));
+  int randlmed = int(random(8, 13));
   
   x = newCoord(x, path, true, randlrg, randsml, randmed, randhmed, randlmed);
   y = newCoord(y, path, false, randlrg, randsml, randmed, randhmed, randlmed);
@@ -397,11 +388,9 @@ int[] outOfRange(int[] xy){
   return new int[] {x, y};
 }
 
-
 void setFont(PFont f){
   font = f;
 }
-
 
 int swapPath(int c, int path){
   /*Swaps the current integer representation of the current Growth Path to the next or previous integer
